@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.school_mall.repository.ProductStyleMapper">
+  
+  <resultMap id="BaseResultMap" type="com.school_mall.entity.ProductStyle">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="product_id" property="productId" jdbcType="BIGINT"/>
+    <result column="style_name" property="styleName" jdbcType="VARCHAR"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, product_id, style_name, create_time
+  </sql>
+  
+  <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_style
+    WHERE id = #{id}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_style
+  </select>
+
+  <select id="selectByProductId" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_style
+    WHERE product_id = #{productId}
+    ORDER BY create_time ASC
+  </select>
+
+  <select id="selectByStyleName" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_style
+    WHERE style_name LIKE CONCAT('%', #{styleName}, '%')
+  </select>
+
+  <select id="selectByProductIdAndStyleName" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_style
+    WHERE product_id = #{productId} AND style_name = #{styleName}
+  </select>
+
+  <select id="countByProductId" parameterType="long" resultType="int">
+    SELECT COUNT(*)
+    FROM product_style
+    WHERE product_id = #{productId}
+  </select>
+
+  <insert id="insert" parameterType="com.school_mall.entity.ProductStyle" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product_style (product_id, style_name, create_time)
+    VALUES (#{productId}, #{styleName}, #{createTime})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.school_mall.entity.ProductStyle" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product_style
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">product_id,</if>
+      <if test="styleName != null">style_name,</if>
+      <if test="createTime != null">create_time,</if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">#{productId},</if>
+      <if test="styleName != null">#{styleName},</if>
+      <if test="createTime != null">#{createTime},</if>
+    </trim>
+  </insert>
+
+  <insert id="batchInsert" parameterType="list">
+    INSERT INTO product_style (product_id, style_name, create_time)
+    VALUES
+    <foreach collection="list" item="item" separator=",">
+      (#{item.productId}, #{item.styleName}, #{item.createTime})
+    </foreach>
+  </insert>
+
+  <update id="updateById" parameterType="com.school_mall.entity.ProductStyle">
+    UPDATE product_style
+    SET product_id = #{productId}, style_name = #{styleName}, create_time = #{createTime}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateByIdSelective" parameterType="com.school_mall.entity.ProductStyle">
+    UPDATE product_style
+    <set>
+      <if test="productId != null">product_id = #{productId},</if>
+      <if test="styleName != null">style_name = #{styleName},</if>
+      <if test="createTime != null">create_time = #{createTime},</if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM product_style WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteByProductId" parameterType="long">
+    DELETE FROM product_style WHERE product_id = #{productId}
+  </delete>
+
+  <delete id="deleteByProductIdAndStyleName" parameterType="map">
+    DELETE FROM product_style 
+    WHERE product_id = #{productId} AND style_name = #{styleName}
+  </delete>
+
+</mapper>

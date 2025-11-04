@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.school_mall.repository.ProductCommentMapper">
+  
+  <resultMap id="BaseResultMap" type="com.school_mall.entity.ProductComment">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="product_id" property="productId" jdbcType="BIGINT"/>
+    <result column="user_id" property="userId" jdbcType="BIGINT"/>
+    <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+    <result column="comment_content" property="commentContent" jdbcType="LONGVARCHAR"/>
+    <result column="comment_img" property="commentImg" jdbcType="VARCHAR"/>
+    <result column="is_anonymous" property="isAnonymous" jdbcType="TINYINT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, product_id, user_id, nickname, comment_content, comment_img, is_anonymous, create_time
+  </sql>
+  
+  <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE id = #{id}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+  </select>
+
+  <select id="selectByProductId" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE product_id = #{productId}
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="selectByUserId" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE user_id = #{userId}
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="selectByProductIdAndUserId" parameterType="map" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE product_id = #{productId} AND user_id = #{userId}
+  </select>
+
+  <select id="selectAnonymousComments" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE product_id = #{productId} AND is_anonymous = 1
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="selectWithImages" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product_comment
+    WHERE product_id = #{productId} AND comment_img IS NOT NULL AND comment_img != ''
+    ORDER BY create_time DESC
+  </select>
+
+  <select id="countByProductId" parameterType="long" resultType="int">
+    SELECT COUNT(*)
+    FROM product_comment
+    WHERE product_id = #{productId}
+  </select>
+
+  <select id="countByUserId" parameterType="long" resultType="int">
+    SELECT COUNT(*)
+    FROM product_comment
+    WHERE user_id = #{userId}
+  </select>
+
+  <insert id="insert" parameterType="com.school_mall.entity.ProductComment" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product_comment (product_id, user_id, nickname, comment_content, comment_img, is_anonymous, create_time)
+    VALUES (#{productId}, #{userId}, #{nickname}, #{commentContent}, #{commentImg}, #{isAnonymous}, #{createTime})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.school_mall.entity.ProductComment" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product_comment
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="productId != null">product_id,</if>
+      <if test="userId != null">user_id,</if>
+      <if test="nickname != null">nickname,</if>
+      <if test="commentContent != null">comment_content,</if>
+      <if test="commentImg != null">comment_img,</if>
+      <if test="isAnonymous != null">is_anonymous,</if>
+      <if test="createTime != null">create_time,</if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="productId != null">#{productId},</if>
+      <if test="userId != null">#{userId},</if>
+      <if test="nickname != null">#{nickname},</if>
+      <if test="commentContent != null">#{commentContent},</if>
+      <if test="commentImg != null">#{commentImg},</if>
+      <if test="isAnonymous != null">#{isAnonymous},</if>
+      <if test="createTime != null">#{createTime},</if>
+    </trim>
+  </insert>
+
+  <update id="updateById" parameterType="com.school_mall.entity.ProductComment">
+    UPDATE product_comment
+    SET product_id = #{productId}, user_id = #{userId}, nickname = #{nickname},
+        comment_content = #{commentContent}, comment_img = #{commentImg}, 
+        is_anonymous = #{isAnonymous}, create_time = #{createTime}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateByIdSelective" parameterType="com.school_mall.entity.ProductComment">
+    UPDATE product_comment
+    <set>
+      <if test="productId != null">product_id = #{productId},</if>
+      <if test="userId != null">user_id = #{userId},</if>
+      <if test="nickname != null">nickname = #{nickname},</if>
+      <if test="commentContent != null">comment_content = #{commentContent},</if>
+      <if test="commentImg != null">comment_img = #{commentImg},</if>
+      <if test="isAnonymous != null">is_anonymous = #{isAnonymous},</if>
+      <if test="createTime != null">create_time = #{createTime},</if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM product_comment WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteByProductId" parameterType="long">
+    DELETE FROM product_comment WHERE product_id = #{productId}
+  </delete>
+
+  <delete id="deleteByUserId" parameterType="long">
+    DELETE FROM product_comment WHERE user_id = #{userId}
+  </delete>
+
+</mapper>

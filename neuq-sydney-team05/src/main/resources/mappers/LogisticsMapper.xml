@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.school_mall.repository.LogisticsMapper">
+  
+  <resultMap id="BaseResultMap" type="com.school_mall.entity.Logistics">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="order_id" property="orderId" jdbcType="BIGINT"/>
+    <result column="logistics_no" property="logisticsNo" jdbcType="VARCHAR"/>
+    <result column="express_name" property="expressName" jdbcType="VARCHAR"/>
+    <result column="logistics_status" property="logisticsStatus" jdbcType="TINYINT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, order_id, logistics_no, express_name, logistics_status, create_time, update_time
+  </sql>
+  
+  <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+    WHERE id = #{id}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+  </select>
+
+  <select id="selectByLogisticsNo" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+    WHERE logistics_no = #{logisticsNo}
+  </select>
+
+  <select id="selectByOrderId" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+    WHERE order_id = #{orderId}
+  </select>
+
+  <select id="selectByStatus" parameterType="int" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+    WHERE logistics_status = #{status}
+  </select>
+
+  <select id="selectByExpressName" parameterType="string" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM logistics
+    WHERE express_name = #{expressName}
+  </select>
+
+  <insert id="insert" parameterType="com.school_mall.entity.Logistics" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO logistics (order_id, logistics_no, express_name, logistics_status, create_time, update_time)
+    VALUES (#{orderId}, #{logisticsNo}, #{expressName}, #{logisticsStatus}, #{createTime}, #{updateTime})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.school_mall.entity.Logistics" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO logistics
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">order_id,</if>
+      <if test="logisticsNo != null">logistics_no,</if>
+      <if test="expressName != null">express_name,</if>
+      <if test="logisticsStatus != null">logistics_status,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="updateTime != null">update_time,</if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="orderId != null">#{orderId},</if>
+      <if test="logisticsNo != null">#{logisticsNo},</if>
+      <if test="expressName != null">#{expressName},</if>
+      <if test="logisticsStatus != null">#{logisticsStatus},</if>
+      <if test="createTime != null">#{createTime},</if>
+      <if test="updateTime != null">#{updateTime},</if>
+    </trim>
+  </insert>
+
+  <update id="updateById" parameterType="com.school_mall.entity.Logistics">
+    UPDATE logistics
+    SET order_id = #{orderId}, logistics_no = #{logisticsNo}, 
+        express_name = #{expressName}, logistics_status = #{logisticsStatus},
+        create_time = #{createTime}, update_time = #{updateTime}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateByIdSelective" parameterType="com.school_mall.entity.Logistics">
+    UPDATE logistics
+    <set>
+      <if test="orderId != null">order_id = #{orderId},</if>
+      <if test="logisticsNo != null">logistics_no = #{logisticsNo},</if>
+      <if test="expressName != null">express_name = #{expressName},</if>
+      <if test="logisticsStatus != null">logistics_status = #{logisticsStatus},</if>
+      <if test="createTime != null">create_time = #{createTime},</if>
+      <if test="updateTime != null">update_time = #{updateTime},</if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateStatusByOrderId" parameterType="map">
+    UPDATE logistics
+    SET logistics_status = #{status}, update_time = NOW()
+    WHERE order_id = #{orderId}
+  </update>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM logistics WHERE id = #{id}
+  </delete>
+
+  <delete id="deleteByOrderId" parameterType="long">
+    DELETE FROM logistics WHERE order_id = #{orderId}
+  </delete>
+
+</mapper>

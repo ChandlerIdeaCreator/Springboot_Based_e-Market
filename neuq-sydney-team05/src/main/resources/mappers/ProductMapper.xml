@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.school_mall.repository.ProductMapper">
+  
+  <resultMap id="BaseResultMap" type="com.school_mall.entity.Product">
+    <id column="id" property="id" jdbcType="BIGINT"/>
+    <result column="shop_type" property="shopType" jdbcType="TINYINT"/>
+    <result column="product_name" property="productName" jdbcType="VARCHAR"/>
+    <result column="original_price" property="originalPrice" jdbcType="DECIMAL"/>
+    <result column="discount_price" property="discountPrice" jdbcType="DECIMAL"/>
+    <result column="joined_count" property="joinedCount" jdbcType="INTEGER"/>
+    <result column="product_img" property="productImg" jdbcType="VARCHAR"/>
+    <result column="quality_check" property="qualityCheck" jdbcType="TINYINT"/>
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    id, shop_type, product_name, original_price, discount_price, joined_count, 
+    product_img, quality_check, create_time, update_time
+  </sql>
+  
+  <select id="selectById" parameterType="long" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product
+    WHERE id = #{id}
+  </select>
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product
+  </select>
+
+  <select id="selectPaged" resultMap="BaseResultMap">
+    SELECT <include refid="Base_Column_List"/>
+    FROM product
+    <if test="name != null and name != ''">
+      WHERE product_name LIKE CONCAT('%', #{name}, '%')
+    </if>
+    ORDER BY ${sortColumn} ${sortOrder}
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <insert id="insert" parameterType="com.school_mall.entity.Product" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product (shop_type, product_name, original_price, discount_price, 
+                        joined_count, product_img, quality_check, create_time, update_time)
+    VALUES (#{shopType}, #{productName}, #{originalPrice}, #{discountPrice}, 
+            #{joinedCount}, #{productImg}, #{qualityCheck}, #{createTime}, #{updateTime})
+  </insert>
+
+  <insert id="insertSelective" parameterType="com.school_mall.entity.Product" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO product
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="shopType != null">shop_type,</if>
+      <if test="productName != null">product_name,</if>
+      <if test="originalPrice != null">original_price,</if>
+      <if test="discountPrice != null">discount_price,</if>
+      <if test="joinedCount != null">joined_count,</if>
+      <if test="productImg != null">product_img,</if>
+      <if test="qualityCheck != null">quality_check,</if>
+      <if test="createTime != null">create_time,</if>
+      <if test="updateTime != null">update_time,</if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="shopType != null">#{shopType},</if>
+      <if test="productName != null">#{productName},</if>
+      <if test="originalPrice != null">#{originalPrice},</if>
+      <if test="discountPrice != null">#{discountPrice},</if>
+      <if test="joinedCount != null">#{joinedCount},</if>
+      <if test="productImg != null">#{productImg},</if>
+      <if test="qualityCheck != null">#{qualityCheck},</if>
+      <if test="createTime != null">#{createTime},</if>
+      <if test="updateTime != null">#{updateTime},</if>
+    </trim>
+  </insert>
+
+  <update id="updateById" parameterType="com.school_mall.entity.Product">
+    UPDATE product
+    SET shop_type = #{shopType}, product_name = #{productName}, 
+        original_price = #{originalPrice}, discount_price = #{discountPrice},
+        joined_count = #{joinedCount}, product_img = #{productImg}, 
+        quality_check = #{qualityCheck}, create_time = #{createTime}, 
+        update_time = #{updateTime}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateByIdSelective" parameterType="com.school_mall.entity.Product">
+    UPDATE product
+    <set>
+      <if test="shopType != null">shop_type = #{shopType},</if>
+      <if test="productName != null">product_name = #{productName},</if>
+      <if test="originalPrice != null">original_price = #{originalPrice},</if>
+      <if test="discountPrice != null">discount_price = #{discountPrice},</if>
+      <if test="joinedCount != null">joined_count = #{joinedCount},</if>
+      <if test="productImg != null">product_img = #{productImg},</if>
+      <if test="qualityCheck != null">quality_check = #{qualityCheck},</if>
+      <if test="createTime != null">create_time = #{createTime},</if>
+      <if test="updateTime != null">update_time = #{updateTime},</if>
+    </set>
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById" parameterType="long">
+    DELETE FROM product WHERE id = #{id}
+  </delete>
+
+</mapper>

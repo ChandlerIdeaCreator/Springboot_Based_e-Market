@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: school-mall
+  datasource:
+    url: jdbc:mysql://115.175.139.58:3388/neuq_team05?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8
+    username: neuq_168
+    password: neuq168168
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 50MB
+      file-size-threshold: 2MB
+
+mybatis:
+  mapper-locations: classpath:mappers/*.xml
+  type-aliases-package: com.school_mall.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    root: INFO
+    com.school_mall: DEBUG
+    com.school_mall.repository: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+jwt:
+  secret: "change_me_please_super_secret_key_for_school_mall_2024"
+  expireMinutes: 1440
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    include-message: always
+    include-exception: false
